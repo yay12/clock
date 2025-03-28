@@ -1,0 +1,89 @@
+{
+  "name": "zhlint",
+  "version": "0.8.2",
+  "description": "A linting tool for Chinese language.",
+  "bin": {
+    "zhlint": "./bin/index.js"
+  },
+  "type": "module",
+  "main": "./lib/index.js",
+  "unpkg": "./dist/zhlint.umd.js",
+  "jsdelivr": "./dist/zhlint.umd.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "tsconfig.json",
+    "dist/*",
+    "bin/*",
+    "lib/*",
+    "docs/*.png",
+    "docs/public/zhlint.svg",
+    "README.md"
+  ],
+  "scripts": {
+    "prepare": "pnpm run build",
+    "dev": "vitest",
+    "debug": "vitest debug.test.ts",
+    "dev:ui": "vitest --ui",
+    "build": "pnpm run build:node && pnpm run build:browser",
+    "build:node": "tsc --project tsconfig-build.json",
+    "build:browser": "vite build",
+    "lint": "prettier --cache --check .",
+    "lint:fix": "prettier --cache --write .",
+    "lint:eslint": "eslint {src,test}/**.ts --cache",
+    "lint:eslint:fix": "eslint {src,test}/**.ts --cache --fix",
+    "test": "pnpm run test:tsc && pnpm run test:vitest",
+    "test:tsc": "tsc --noEmit",
+    "test:vitest": "vitest run",
+    "coverage": "vitest run --coverage",
+    "docs:dev": "vitepress dev docs",
+    "docs:runtime": "cp dist/zhlint.es.js* docs/",
+    "docs:readme": "node scripts/gen-readme.mjs",
+    "docs:build": "vitepress build docs",
+    "docs:serve": "vitepress serve docs",
+    "docs:deploy": "./deploy.sh",
+    "prepublish": "pnpm run build && pnpm run docs:runtime && pnpm run docs:readme"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhlint-project/zhlint.git"
+  },
+  "keywords": [
+    "lint",
+    "zh",
+    "Chinese"
+  ],
+  "author": "Jinjiang <zhaojinjiang@me.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zhlint-project/zhlint/issues"
+  },
+  "homepage": "https://github.com/zhlint-project/zhlint#readme",
+  "devDependencies": {
+    "@types/mdast": "^4.0.3",
+    "@types/node": "^20.11.17",
+    "@types/unist": "^3.0.2",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@vitest/ui": "^1.2.2",
+    "eslint": "^8.56.0",
+    "mdast-util-to-markdown": "^2.1.0",
+    "node-stdlib-browser": "^1.2.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.3.3",
+    "vite": "^5.1.1",
+    "vite-plugin-node-polyfills": "^0.19.0",
+    "vitepress": "^1.0.0",
+    "vitest": "^1.2.2"
+  },
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "glob": "^10.3.10",
+    "ignore": "^5.3.1",
+    "minimist": "^1.2.8",
+    "remark-custom-container": "^1.3.1",
+    "remark-frontmatter": "^4.0.1",
+    "remark-gfm": "^3.0.1",
+    "remark-parse": "^10.0.0",
+    "unified": "^10.0.0"
+  }
+}

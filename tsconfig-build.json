@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "rootDir": "src",
+    "lib": ["es2017"],
+    "target": "es2017",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
+    "strictNullChecks": true,
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "lib"
+  },
+  "include": ["./src"]
+}

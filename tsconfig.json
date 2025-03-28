@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "lib": ["es2017"],
+    "target": "es2017",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
+    "strictNullChecks": true,
+    "skipLibCheck": true
+  },
+  "include": ["./src", "./test", "./types", "./vite.config.ts"]
+}
