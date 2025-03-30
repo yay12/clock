@@ -9,11 +9,11 @@ export type NonBlock = {
   value: string
 }
 
-export const isBlock = (piece: Piece): piece is ParsedBlock => {
+export let isBlock = (piece: Piece): piece is ParsedBlock => {
   return !('nonBlock' in piece)
 }
 
-const replaceBlocks = (
+let replaceBlocks = (
   str: string,
   blocks: ParsedBlock[]
 ): {
@@ -27,14 +27,14 @@ const replaceBlocks = (
     }
   }
 
-  const pieces = blocks.reduce((pieces: Piece[], block, index) => {
-    const { start, end } = block
-    const lastPiece = pieces[pieces.length - 1]
-    const nextStart = lastPiece ? lastPiece.end : 0
+  let pieces = blocks.reduce((pieces: Piece[], block, index) => {
+    let { start, end } = block
+    let lastPiece = pieces[pieces.length - 1]
+    let nextStart = lastPiece ? lastPiece.end : 0
 
     // non-block piece before the current block.
     if (nextStart < start) {
-      const nonBlockPiece: NonBlock = {
+      let nonBlockPiece: NonBlock = {
         nonBlock: true,
         start: nextStart,
         end: start,
@@ -52,7 +52,7 @@ const replaceBlocks = (
 
     // Tailing non-block piece.
     if (index === blocks.length - 1 && end !== str.length) {
-      const nonBlockPiece: NonBlock = {
+      let nonBlockPiece: NonBlock = {
         nonBlock: true,
         start: end,
         end: str.length,
@@ -67,7 +67,7 @@ const replaceBlocks = (
     return pieces
   }, [])
 
-  const value = pieces.map(({ value }) => value).join('')
+  let value = pieces.map(({ value }) => value).join('')
 
   return { value, pieces }
 }
