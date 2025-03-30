@@ -3,7 +3,7 @@ import { describe, test, expect } from 'vitest'
 import run, { Options } from '../src/run.js'
 import { options } from './prepare.js'
 
-const getOutput = (...args: [string, Options?]) => run(...args).result
+let getOutput = (...args: [string, Options?]) => run(...args).result
 
 describe('lint by issues', () => {
   // https://github.com/zhlint-project/zhlint/issues/11
@@ -13,7 +13,7 @@ describe('lint by issues', () => {
 
   // https://github.com/zhlint-project/zhlint/issues/13
   test('#13 VitePress tags', () => {
-    const text = `![Chrome 开发者工具正在通过标签展示无障碍访问的 input 框的名字](./images/AccessibleLabelChromeDevTools.png)
+    let text = `![Chrome 开发者工具正在通过标签展示无障碍访问的 input 框的名字](./images/AccessibleLabelChromeDevTools.png)
 
 :::warning 警告：
 你可能还见过这样的包裹 input 框的标签：
@@ -167,7 +167,7 @@ describe('lint from v3.cn.vuejs.org', () => {
     )
   })
   test('#74 wrong parsing on api/index.md', () => {
-    const text = `---
+    let text = `---
 title: API 参考
 sidebar: false
 page: true
@@ -184,7 +184,7 @@ import ApiIndex from './ApiIndex.vue'
   })
   // https://github.com/zhlint-project/zhlint/issues/159
   test('#159 unexpected function () { [native code] }', () => {
-    const text = `p.toString() 中文`
+    let text = `p.toString() 中文`
     expect(getOutput(text, options)).toBe(text)
   })
 })
