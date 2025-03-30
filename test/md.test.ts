@@ -5,12 +5,12 @@ import markdownParser from '../src/hypers/md.js'
 import { ParsedStatus } from '../src/hypers/types.js'
 import { options } from './prepare.js'
 
-const getOutput = (str: string) => run(str, options).result
+let getOutput = (str: string) => run(str, options).result
 
 describe('parser with markdown', () => {
   test('[md parser] single paragraph', () => {
-    const text = 'X [xxx](xxx) X *y* __x__ `ss` _0_ ~~asd~~ *asf**asf**adsf*'
-    const data: ParsedStatus = {
+    let text = 'X [xxx](xxx) X *y* __x__ `ss` _0_ ~~asd~~ *asf**asf**adsf*'
+    let data: ParsedStatus = {
       value: text,
       modifiedValue: text,
       ignoredByRules: [],
@@ -24,8 +24,8 @@ describe('parser with markdown', () => {
         }
       ]
     }
-    const result = markdownParser(data).blocks
-    const marks = [
+    let result = markdownParser(data).blocks
+    let marks = [
       {
         type: 'hyper',
         meta: 'link',
