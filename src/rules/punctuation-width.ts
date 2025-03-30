@@ -40,7 +40,7 @@ type WidthSidePairList = Array<
 type AlterMap = Record<string, string>
 type AlterPairMap = Record<string, [leftSide: string, rightSide: string]>
 
-const widthPairList: WidthPairList = [
+let widthPairList: WidthPairList = [
   [`,`, `，`],
   [`.`, `。`],
   [`;`, `；`],
@@ -54,22 +54,22 @@ const widthPairList: WidthPairList = [
   [`{`, `｛`],
   [`}`, `｝`]
 ]
-const widthSidePairList: WidthSidePairList = [
+let widthSidePairList: WidthSidePairList = [
   [`"`, `“`, `”`],
   [`'`, `‘`, `’`]
 ]
 
-const defaultHalfwidthOption = `()[]{}`
-const defaultFullwidthOption = `，。：；？！“”‘’`
-const defaultAdjustedFullwidthOption = `“”‘’`
+let defaultHalfwidthOption = `()[]{}`
+let defaultFullwidthOption = `，。：；？！“”‘’`
+let defaultAdjustedFullwidthOption = `“”‘’`
 
-const checkAdjusted = (token: MutableToken, adjusted: string): void => {
+let checkAdjusted = (token: MutableToken, adjusted: string): void => {
   if (adjusted.indexOf(token.modifiedValue) >= 0) {
     token.modifiedType = getHalfwidthTokenType(token.type)
   }
 }
 
-const parseOptions = (
+let parseOptions = (
   options: Options
 ): {
   halfwidthMap: AlterMap
@@ -77,13 +77,13 @@ const parseOptions = (
   fullwidthPairMap: AlterPairMap
   adjusted: string
 } => {
-  const halfwidthOption = options?.halfwidthPunctuation || ''
-  const fullwidthOption = options?.fullwidthPunctuation || ''
-  const adjustedFullwidthOption = options?.adjustedFullwidthPunctuation || ''
+  let halfwidthOption = options?.halfwidthPunctuation || ''
+  let fullwidthOption = options?.fullwidthPunctuation || ''
+  let adjustedFullwidthOption = options?.adjustedFullwidthPunctuation || ''
 
-  const halfwidthMap: AlterMap = {}
-  const fullwidthMap: AlterMap = {}
-  const fullwidthPairMap: AlterPairMap = {}
+  let halfwidthMap: AlterMap = {}
+  let fullwidthMap: AlterMap = {}
+  let fullwidthPairMap: AlterPairMap = {}
 
   widthPairList.forEach(([halfwidth, fullwidth]) => {
     if (halfwidthOption.indexOf(halfwidth) >= 0) {
@@ -114,11 +114,11 @@ const parseOptions = (
   }
 }
 
-const generateHandler = (options: Options): Handler => {
-  const { halfwidthMap, fullwidthMap, fullwidthPairMap, adjusted } =
+let generateHandler = (options: Options): Handler => {
+  let { halfwidthMap, fullwidthMap, fullwidthPairMap, adjusted } =
     parseOptions(options)
 
-  const handleHyperSpaceOption: Handler = (
+  let handleHyperSpaceOption: Handler = (
     token: MutableToken,
     _,
     group: MutableGroupToken
@@ -148,7 +148,7 @@ const generateHandler = (options: Options): Handler => {
       isSinglePunctuationType(token.type) ||
       token.type === HyperTokenType.BRACKET_MARK
     ) {
-      const value = token.modifiedValue
+      let value = token.modifiedValue
       if (fullwidthMap[value]) {
         checkValue(
           token,
@@ -169,8 +169,8 @@ const generateHandler = (options: Options): Handler => {
     }
 
     // 3. quotations in the alter pair map
-    const startValue = (token as MutableGroupToken).modifiedStartValue
-    const endValue = (token as MutableGroupToken).modifiedEndValue
+    let startValue = (token as MutableGroupToken).modifiedStartValue
+    let endValue = (token as MutableGroupToken).modifiedEndValue
     if (fullwidthPairMap[startValue]) {
       checkStartValue(
         token,
@@ -197,7 +197,7 @@ const generateHandler = (options: Options): Handler => {
   return handleHyperSpaceOption
 }
 
-export const defaultConfig: Options = {
+export let defaultConfig: Options = {
   halfwidthPunctuation: defaultHalfwidthOption,
   fullwidthPunctuation: defaultFullwidthOption,
   adjustedFullwidthPunctuation: defaultAdjustedFullwidthOption
