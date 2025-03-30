@@ -5,7 +5,7 @@ import { defineConfig } from 'vite'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 export default defineConfig((env) => {
-  const { mode } = env
+  let { mode } = env
   return {
     build: {
       lib: {
