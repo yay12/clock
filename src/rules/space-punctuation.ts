@@ -55,11 +55,11 @@ import {
   PUNCTUATION_SPACE_AFTER
 } from './messages.js'
 
-const generateHandler = (options: Options): Handler => {
-  const noBeforePunctuationOption = options?.noSpaceBeforePauseOrStop
-  const oneAfterHalfWidthPunctuationOption =
+let generateHandler = (options: Options): Handler => {
+  let noBeforePunctuationOption = options?.noSpaceBeforePauseOrStop
+  let oneAfterHalfWidthPunctuationOption =
     options?.spaceAfterHalfwidthPauseOrStop
-  const noAfterFullWidthPunctuationOption =
+  let noAfterFullWidthPunctuationOption =
     options?.noSpaceAfterFullwidthPauseOrStop
 
   return (token: MutableToken, _: number, group: MutableGroupToken) => {
@@ -80,7 +80,7 @@ const generateHandler = (options: Options): Handler => {
 
     // 1. content/right-quotation/right-bracket/code x punctuation
     if (noBeforePunctuationOption) {
-      const contentTokenBefore = findVisibleTokenBefore(group, token)
+      let contentTokenBefore = findVisibleTokenBefore(group, token)
       if (
         contentTokenBefore &&
         // content
@@ -93,7 +93,7 @@ const generateHandler = (options: Options): Handler => {
           // code
           contentTokenBefore.type === HyperTokenType.CODE_CONTENT)
       ) {
-        const { spaceHost } = findWrappersBetween(
+        let { spaceHost } = findWrappersBetween(
           group,
           contentTokenBefore,
           token
@@ -112,14 +112,14 @@ const generateHandler = (options: Options): Handler => {
       (isHalfwidthPunctuationType(token.modifiedType) &&
         oneAfterHalfWidthPunctuationOption)
     ) {
-      const spaceAfter = isHalfwidthPunctuationType(token.modifiedType)
+      let spaceAfter = isHalfwidthPunctuationType(token.modifiedType)
         ? ' '
         : ''
-      const message = isHalfwidthPunctuationType(token.modifiedType)
+      let message = isHalfwidthPunctuationType(token.modifiedType)
         ? PUNCTUATION_SPACE_AFTER
         : PUNCTUATION_NOSPACE_AFTER
 
-      const contentTokenAfter = findVisibleTokenAfter(group, token)
+      let contentTokenAfter = findVisibleTokenAfter(group, token)
       if (
         contentTokenAfter &&
         // content
@@ -132,7 +132,7 @@ const generateHandler = (options: Options): Handler => {
           // code
           contentTokenAfter.type === HyperTokenType.CODE_CONTENT)
       ) {
-        const { spaceHost } = findWrappersBetween(
+        let { spaceHost } = findWrappersBetween(
           group,
           token,
           contentTokenAfter
@@ -146,7 +146,7 @@ const generateHandler = (options: Options): Handler => {
   }
 }
 
-export const defaultConfig: Options = {
+export let defaultConfig: Options = {
   noSpaceBeforePunctuation: true,
   spaceAfterHalfWidthPunctuation: true,
   noSpaceAfterFullWidthPunctuation: true
