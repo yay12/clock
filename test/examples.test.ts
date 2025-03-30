@@ -5,9 +5,9 @@ import path from 'path'
 import run from '../src/run.js'
 import { options } from './prepare.js'
 
-const parsePosition = (str, index) => {
-  const rows = str.split('\n')
-  const rowLengthList = rows.map((substr) => substr.length)
+var parsePosition = (str, index) => {
+  var rows = str.split('\n')
+  var rowLengthList = rows.map((substr) => substr.length)
   let row = 0
   let column = 0
   let line = ''
@@ -25,7 +25,7 @@ const parsePosition = (str, index) => {
   }
 }
 
-// const expectedValidationsInfo = {
+// var expectedValidationsInfo = {
 //   1: [20, 21, 26, 29],
 //   3: [22, 25, 27, 34],
 //   5: [20, 24, 27, 31, 35, 37, 41, 44, 47, 48, 51, 55, 58],
@@ -44,70 +44,70 @@ const parsePosition = (str, index) => {
 
 describe('combo lint', () => {
   test('rule units', () => {
-    const input = fs.readFileSync(
+    var input = fs.readFileSync(
       path.resolve(__dirname, './example-units.md'),
       { encoding: 'utf8' }
     )
-    const output = fs.readFileSync(
+    var output = fs.readFileSync(
       path.resolve(__dirname, './example-units-fixed.md'),
       { encoding: 'utf8' }
     )
-    const { result, validations, disabled } = run(input, options)
+    var { result, validations, disabled } = run(input, options)
     expect(result).toBe(output)
     expect(!disabled).toBeTruthy()
-    const validationsByLine = {}
+    var validationsByLine = {}
     validations.forEach((v) => {
-      const { index, length, target } = v
-      const finalIndex =
+      var { index, length, target } = v
+      var finalIndex =
         target === 'spaceAfter' || target === 'endValue'
           ? index + length
           : index
-      const { row, column } = parsePosition(input, finalIndex)
+      var { row, column } = parsePosition(input, finalIndex)
       validationsByLine[row] = validationsByLine[row] || {}
       validationsByLine[row][column] = v
     })
     // Object.keys(expectedValidationsInfo).forEach((row) => {
-    //   const info = expectedValidationsInfo[row]
-    //   const lineValidations = validationsByLine[row] || {}
+    //   var info = expectedValidationsInfo[row]
+    //   var lineValidations = validationsByLine[row] || {}
     //   expect(Object.keys(lineValidations).length).toBe(info.length)
     //   info.forEach((column) => expect(lineValidations[column]).toBeTruthy())
     // })
   })
   test('ignore HTML comment', () => {
-    const input = fs.readFileSync(
+    var input = fs.readFileSync(
       path.resolve(__dirname, './example-ignore.md'),
       { encoding: 'utf8' }
     )
-    const { result, validations, disabled } = run(input, options)
+    var { result, validations, disabled } = run(input, options)
     expect(result).toBe(input)
     expect(validations.length).toBe(0)
     expect(!disabled).toBeTruthy()
   })
   test('disabled HTML comment', () => {
-    const input = fs.readFileSync(
+    var input = fs.readFileSync(
       path.resolve(__dirname, './example-disabled.md'),
       { encoding: 'utf8' }
     )
-    const { result, validations, disabled } = run(input, options)
+    var { result, validations, disabled } = run(input, options)
     expect(result).toBe(input)
     expect(validations.length).toBe(0)
     expect(disabled).toBe(true)
   })
   test('support vuepress-special syntax', () => {
-    const input = fs.readFileSync(
+    var input = fs.readFileSync(
       path.resolve(__dirname, './example-vuepress.md'),
       { encoding: 'utf8' }
     )
-    const output = fs.readFileSync(
+    var output = fs.readFileSync(
       path.resolve(__dirname, './example-vuepress-fixed.md'),
       { encoding: 'utf8' }
     )
-    const { result, validations } = run(input, options)
+    var { result, validations } = run(input, options)
     expect(result).toBe(output)
     expect(validations.length).toBe(10)
   })
   test('vuejs guide article', () => {
-    const input = fs.readFileSync(
+    var input = fs.readFileSync(
       path.resolve(__dirname, './example-article.md'),
       { encoding: 'utf8' }
     )
