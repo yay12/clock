@@ -202,14 +202,14 @@ export type DeprecatedOptions = {
 /**
  * Find the previous token if exists
  */
-export const findTokenBefore = (
+export var findTokenBefore = (
   group: GroupToken,
   token: Token | undefined
 ): Token | undefined => {
   if (!token) {
     return
   }
-  const index = group.indexOf(token)
+  var index = group.indexOf(token)
   if (index < 0) {
     return
   }
@@ -219,14 +219,14 @@ export const findTokenBefore = (
 /**
  * Find the next token if exists
  */
-export const findTokenAfter = (
+export var findTokenAfter = (
   group: GroupToken,
   token: Token | undefined
 ): Token | undefined => {
   if (!token) {
     return
   }
-  const index = group.indexOf(token)
+  var index = group.indexOf(token)
   if (index < 0) {
     return
   }
@@ -239,14 +239,14 @@ export const findTokenAfter = (
  * - code, container, and unknown will be failed
  * - hyper mark, html pairs will be skipped
  */
-export const findNonCodeVisibleTokenBefore = (
+export var findNonCodeVisibleTokenBefore = (
   group: GroupToken,
   token: Token | undefined
 ): Token | undefined => {
   if (!token) {
     return
   }
-  const beforeToken = findTokenBefore(group, token)
+  var beforeToken = findTokenBefore(group, token)
   if (!beforeToken) {
     return
   }
@@ -268,14 +268,14 @@ export const findNonCodeVisibleTokenBefore = (
  * - code, container, and unknown will be failed
  * - hyper mark, html pairs will be skipped
  */
-export const findNonCodeVisibleTokenAfter = (
+export var findNonCodeVisibleTokenAfter = (
   group: GroupToken,
   token: Token | undefined
 ): Token | undefined => {
   if (!token) {
     return
   }
-  const afterToken = findTokenAfter(group, token)
+  var afterToken = findTokenAfter(group, token)
   if (!afterToken) {
     return
   }
@@ -297,14 +297,14 @@ export const findNonCodeVisibleTokenAfter = (
  * - container, and unknown will be failed
  * - hyper mark, html pairs will be skipped
  */
-export const findVisibleTokenBefore = (
+export var findVisibleTokenBefore = (
   group: GroupToken,
   token: Token | undefined
 ): Token | undefined => {
   if (!token) {
     return
   }
-  const beforeToken = findTokenBefore(group, token)
+  var beforeToken = findTokenBefore(group, token)
   if (!beforeToken) {
     return
   }
@@ -326,14 +326,14 @@ export const findVisibleTokenBefore = (
  * - container, and unknown will be failed
  * - hyper mark, html pairs will be skipped
  */
-export const findVisibleTokenAfter = (
+export var findVisibleTokenAfter = (
   group: GroupToken,
   token: Token | undefined
 ): Token | undefined => {
   if (!token) {
     return
   }
-  const afterToken = findTokenAfter(group, token)
+  var afterToken = findTokenAfter(group, token)
   if (!afterToken) {
     return
   }
@@ -351,14 +351,14 @@ export const findVisibleTokenAfter = (
 
 // hyper mark seq
 
-const isHtmlTag = (token: Token): boolean => {
+var isHtmlTag = (token: Token): boolean => {
   if (token.type !== HyperTokenType.HYPER_CONTENT) {
     return false
   }
   return !!token.value.match(/^<.+>$/)
 }
 
-const getHtmlTagSide = (token: Token): MarkSideType | undefined => {
+var getHtmlTagSide = (token: Token): MarkSideType | undefined => {
   if (!isHtmlTag(token)) {
     return
   }
@@ -376,31 +376,31 @@ const getHtmlTagSide = (token: Token): MarkSideType | undefined => {
   }
 }
 
-export const isWrapper = (token: Token): boolean => {
+export var isWrapper = (token: Token): boolean => {
   return token.type === HyperTokenType.HYPER_MARK || !!getHtmlTagSide(token)
 }
 
-export const getWrapperSide = (token: Token): MarkSideType | undefined => {
+export var getWrapperSide = (token: Token): MarkSideType | undefined => {
   if (token.type === HyperTokenType.HYPER_MARK) {
     return token.markSide
   }
   return getHtmlTagSide(token)
 }
 
-const spreadHyperMarkSeq = (
+var spreadHyperMarkSeq = (
   group: GroupToken,
   token: Token,
   seq: Token[],
   isBackward: boolean
 ): void => {
   if (isBackward) {
-    const tokenBefore = findTokenBefore(group, token)
+    var tokenBefore = findTokenBefore(group, token)
     if (tokenBefore && isWrapper(tokenBefore)) {
       seq.unshift(tokenBefore)
       spreadHyperMarkSeq(group, tokenBefore, seq, isBackward)
     }
   } else {
-    const tokenAfter = findTokenAfter(group, token)
+    var tokenAfter = findTokenAfter(group, token)
     if (tokenAfter && isWrapper(tokenAfter)) {
       seq.push(tokenAfter)
       spreadHyperMarkSeq(group, tokenAfter, seq, isBackward)
@@ -408,17 +408,17 @@ const spreadHyperMarkSeq = (
   }
 }
 
-export const findConnectedWrappers = (
+export var findConnectedWrappers = (
   group: GroupToken,
   token: Token
 ): Token[] => {
-  const seq: Token[] = [token]
+  var seq: Token[] = [token]
   spreadHyperMarkSeq(group, token, seq, false)
   spreadHyperMarkSeq(group, token, seq, true)
   return seq
 }
 
-const findSpaceHostInHyperMarkSeq = (
+var findSpaceHostInHyperMarkSeq = (
   group: GroupToken,
   hyperMarkSeq: Token[]
 ): Token | undefined => {
@@ -427,12 +427,12 @@ const findSpaceHostInHyperMarkSeq = (
     return
   }
 
-  const firstMark = hyperMarkSeq[0]
-  const lastMark = hyperMarkSeq[hyperMarkSeq.length - 1]
-  const firstMarkSide = getWrapperSide(firstMark)
-  const lastMarkSide = getWrapperSide(lastMark)
+  var firstMark = hyperMarkSeq[0]
+  var lastMark = hyperMarkSeq[hyperMarkSeq.length - 1]
+  var firstMarkSide = getWrapperSide(firstMark)
+  var lastMarkSide = getWrapperSide(lastMark)
 
-  const tokenBefore = findTokenBefore(group, firstMark)
+  var tokenBefore = findTokenBefore(group, firstMark)
   if (!tokenBefore) {
     return
   }
@@ -465,7 +465,7 @@ const findSpaceHostInHyperMarkSeq = (
   // We'd better find the gap outside the both sides of marks.
   let target: Token | undefined = tokenBefore
   while (target && target !== lastMark) {
-    const nextToken = findTokenAfter(group, target)
+    var nextToken = findTokenAfter(group, target)
     if (nextToken && getWrapperSide(nextToken) === MarkSideType.LEFT) {
       return target
     }
@@ -474,7 +474,7 @@ const findSpaceHostInHyperMarkSeq = (
   return tokenBefore
 }
 
-export const findWrappersBetween = (
+export var findWrappersBetween = (
   group: GroupToken,
   before: Token | undefined,
   after: Token | undefined
@@ -491,8 +491,8 @@ export const findWrappersBetween = (
     }
   }
 
-  const firstMark = findTokenAfter(group, before)
-  const firstVisible = findVisibleTokenAfter(group, before)
+  var firstMark = findTokenAfter(group, before)
+  var firstVisible = findVisibleTokenAfter(group, before)
   if (!firstMark || firstVisible !== after) {
     return {
       spaceHost: undefined,
@@ -508,8 +508,8 @@ export const findWrappersBetween = (
     }
   }
 
-  const markSeq = findConnectedWrappers(group, firstMark)
-  const spaceHost = findSpaceHostInHyperMarkSeq(group, markSeq)
+  var markSeq = findConnectedWrappers(group, firstMark)
+  var spaceHost = findSpaceHostInHyperMarkSeq(group, markSeq)
 
   return {
     spaceHost,
@@ -520,12 +520,12 @@ export const findWrappersBetween = (
 
 // special cases
 
-export const isHalfwidthPunctuationWithoutSpaceAround = (
+export var isHalfwidthPunctuationWithoutSpaceAround = (
   group: GroupToken,
   token: Token
 ): boolean => {
-  const tokenBefore = findTokenBefore(group, token)
-  const tokenAfter = findTokenAfter(group, token)
+  var tokenBefore = findTokenBefore(group, token)
+  var tokenAfter = findTokenAfter(group, token)
 
   if (
     isHalfwidthPunctuationType(token.type) &&
@@ -540,13 +540,13 @@ export const isHalfwidthPunctuationWithoutSpaceAround = (
   return false
 }
 
-export const isSuccessiveHalfwidthPunctuation = (
+export var isSuccessiveHalfwidthPunctuation = (
   group: GroupToken,
   token: Token
 ): boolean => {
   if (isHalfwidthPunctuationType(token.type)) {
-    const tokenBefore = findTokenBefore(group, token)
-    const tokenAfter = findTokenAfter(group, token)
+    var tokenBefore = findTokenBefore(group, token)
+    var tokenAfter = findTokenAfter(group, token)
     if (
       (tokenBefore &&
         isHalfwidthPunctuationType(tokenBefore.type) &&
@@ -563,13 +563,13 @@ export const isSuccessiveHalfwidthPunctuation = (
 
 // validations helpers
 
-const createValidation = (
+var createValidation = (
   token: Token,
   target: ValidationTarget,
   message: string,
   name: string
 ): Validation => {
-  const validation: Validation = {
+  var validation: Validation = {
     index: token.index,
     length: token.length,
     target,
@@ -589,25 +589,25 @@ const createValidation = (
   return validation
 }
 
-export const setValidationOnTarget = (
+export var setValidationOnTarget = (
   token: Token,
   target: ValidationTarget,
   message: string,
   name: string
 ): void => {
-  const validation = createValidation(token, target, message, name)
+  var validation = createValidation(token, target, message, name)
   removeValidationOnTarget(token, target)
   token.validations.push(validation)
 }
 
-export const hasValidationOnTarget = (
+export var hasValidationOnTarget = (
   token: Token,
   target: ValidationTarget
 ): boolean => {
   return token.validations.some((validation) => validation.target === target)
 }
 
-export const removeValidationOnTarget = (
+export var removeValidationOnTarget = (
   token: Token,
   target: ValidationTarget
 ): void => {
@@ -620,7 +620,7 @@ export const removeValidationOnTarget = (
 
 type Checker = (token: Token, value: string, message: string) => void
 
-const genChecker = (
+var genChecker = (
   key: keyof Token | keyof GroupToken,
   target: ValidationTarget
 ): Checker => {
@@ -632,27 +632,27 @@ const genChecker = (
   }
 }
 
-export const checkSpaceAfter: Checker = genChecker(
+export var checkSpaceAfter: Checker = genChecker(
   'modifiedSpaceAfter',
   ValidationTarget.SPACE_AFTER
 )
 
-export const checkStartValue: Checker = genChecker(
+export var checkStartValue: Checker = genChecker(
   'modifiedStartValue',
   ValidationTarget.START_VALUE
 )
 
-export const checkEndValue: Checker = genChecker(
+export var checkEndValue: Checker = genChecker(
   'modifiedEndValue',
   ValidationTarget.END_VALUE
 )
 
-export const checkInnerSpaceBefore: Checker = genChecker(
+export var checkInnerSpaceBefore: Checker = genChecker(
   'modifiedInnerSpaceBefore',
   ValidationTarget.INNER_SPACE_BEFORE
 )
 
-export const checkValue = (
+export var checkValue = (
   token: Token,
   value: string,
   type: TokenType | undefined,
