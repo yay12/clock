@@ -20,20 +20,20 @@ type NormalizedPosition = {
   end: number
 }
 
-const parsePosition = (position?: Position): NormalizedPosition => ({
+let parsePosition = (position?: Position): NormalizedPosition => ({
   start: position?.start?.offset || 0,
   end: position?.end?.offset || 0
 })
 
 // AST related
 
-const isParent = (node: Node): node is Ast.Parent => {
+let isParent = (node: Node): node is Ast.Parent => {
   return (node as Ast.Parent).children !== undefined
 }
 
 type BlockType = Ast.Paragraph | Ast.Heading | Ast.TableCell
-const blockTypes: string[] = ['paragraph', 'heading', 'table-cell']
-const isBlock = (node: Node): node is BlockType => {
+let blockTypes: string[] = ['paragraph', 'heading', 'table-cell']
+let isBlock = (node: Node): node is BlockType => {
   return blockTypes.indexOf(node.type) >= 0
 }
 
@@ -43,14 +43,14 @@ type InlineContentType =
   | Ast.Delete
   | Ast.Link
   | Ast.LinkReference
-const inlineContentTypes: string[] = [
+let inlineContentTypes: string[] = [
   'emphasis',
   'strong',
   'delete',
   'link',
   'linkReference'
 ]
-const isInlineContent = (node: Node): node is InlineContentType => {
+let isInlineContent = (node: Node): node is InlineContentType => {
   return inlineContentTypes.indexOf(node.type) >= 0
 }
 
@@ -61,7 +61,7 @@ type InlineRawType =
   | Ast.ImageReference
   | Ast.FootnoteDefinition
   | Ast.Html
-const inlineRawTypes: string[] = [
+let inlineRawTypes: string[] = [
   'inlineCode',
   'break',
   'image',
@@ -69,7 +69,7 @@ const inlineRawTypes: string[] = [
   'footnoteDefinition',
   'html'
 ]
-const isInlineRaw = (node: Node): node is InlineRawType => {
+let isInlineRaw = (node: Node): node is InlineRawType => {
   return inlineRawTypes.indexOf(node.type) >= 0
 }
 
@@ -87,14 +87,14 @@ type InlineMark = {
   raw: boolean
 }
 
-const travelBlocks = (node: Node, blocks: BlockMark[]): void => {
+let travelBlocks = (node: Node, blocks: BlockMark[]): void => {
   if (isParent(node)) {
     node.children.forEach((child) => {
       if (child.type === 'yaml') {
         return
       }
       if (isBlock(child)) {
-        const blockMark: BlockMark = {
+        let blockMark: BlockMark = {
           block: child,
           inlineMarks: [],
           hyperMarks: [],
@@ -109,7 +109,7 @@ const travelBlocks = (node: Node, blocks: BlockMark[]): void => {
   }
 }
 
-const travelInlines = (node: Node, blockMark: BlockMark): void => {
+let travelInlines = (node: Node, blockMark: BlockMark): void => {
   if (isParent(node)) {
     node.children.forEach((child) => {
       if (isInlineContent(child)) {
@@ -123,27 +123,27 @@ const travelInlines = (node: Node, blockMark: BlockMark): void => {
   }
 }
 
-const processBlockMark = (blockMark: BlockMark, str: string): void => {
-  const { block, inlineMarks } = blockMark
+let processBlockMark = (blockMark: BlockMark, str: string): void => {
+  let { block, inlineMarks } = blockMark
   if (!block.position) {
     return
   }
-  const offset = block.position.start.offset || 0
+  let offset = block.position.start.offset || 0
 
-  const marks: Mark[] = []
-  const unresolvedCodeMarks: RawMark[] = []
+  let marks: Mark[] = []
+  let unresolvedCodeMarks: RawMark[] = []
 
   // Generate all the marks includes hyper (inline) and raw.
   inlineMarks.forEach((inlineMark) => {
-    const { inline } = inlineMark
+    let { inline } = inlineMark
     if (!inline.position) {
       return
     }
-    const startOffset = inline.position.start.offset || 0
-    const endOffset = inline.position.end.offset || 0
+    let startOffset = inline.position.start.offset || 0
+    let endOffset = inline.position.end.offset || 0
 
     if (isInlineRaw(inline)) {
-      const mark: Mark = {
+      let mark: Mark = {
         type: MarkType.RAW,
         // TODO: typeof RawMark.meta
         meta: inline.type,
@@ -154,13 +154,13 @@ const processBlockMark = (blockMark: BlockMark, str: string): void => {
       }
       // TODO: Ast.InlineCode?
       if (mark.startValue.match(/<code.*>/)) {
-        const rawMark: RawMark = { ...mark, code: MarkSideType.LEFT }
+        let rawMark: RawMark = { ...mark, code: MarkSideType.LEFT }
         unresolvedCodeMarks.push(rawMark)
         marks.push(rawMark)
         return
       } else if (mark.startValue.match(/<\/code.*>/)) {
-        const rawMark: RawMark = { ...mark, code: MarkSideType.RIGHT }
-        const leftCode = unresolvedCodeMarks.pop()
+        let rawMark: RawMark = { ...mark, code: MarkSideType.RIGHT }
+        let leftCode = unresolvedCodeMarks.pop()
         if (leftCode) {
           leftCode.rightPair = rawMark
         }
@@ -169,14 +169,14 @@ const processBlockMark = (blockMark: BlockMark, str: string): void => {
       }
       marks.push(mark)
     } else {
-      const firstChild = inline.children[0]
-      const lastChild = inline.children[inline.children.length - 1]
+      let firstChild = inline.children[0]
+      let lastChild = inline.children[inline.children.length - 1]
       if (!firstChild.position || !lastChild.position) {
         return
       }
-      const innerStartOffset = firstChild.position.start.offset || 0
-      const innerEndOffset = lastChild.position.end.offset || 0
-      const mark: Mark = {
+      let innerStartOffset = firstChild.position.start.offset || 0
+      let innerEndOffset = lastChild.position.end.offset || 0
+      let mark: Mark = {
         type: MarkType.HYPER,
         // TODO: typeof RawMark.meta
         meta: inline.type,
@@ -201,7 +201,7 @@ const processBlockMark = (blockMark: BlockMark, str: string): void => {
           return
         }
         if (mark.code === MarkSideType.LEFT) {
-          const { rightPair } = mark
+          let { rightPair } = mark
           mark.startValue = str.substring(
             mark.startIndex + offset,
             mark.endIndex + offset
@@ -224,14 +224,14 @@ const processBlockMark = (blockMark: BlockMark, str: string): void => {
     - no text: inline code/break/image/image ref/footnote ref/html
     - marks: emphasis/strong/delete/footnote/link/link ref
  */
-const parser = (data: ParsedStatus): ParsedStatus => {
-  const value = data.value
-  const modifiedValue = data.modifiedValue
-  const ignoredByParsers = data.ignoredByParsers
+let parser = (data: ParsedStatus): ParsedStatus => {
+  let value = data.value
+  let modifiedValue = data.modifiedValue
+  let ignoredByParsers = data.ignoredByParsers
 
-  const blockMarks: BlockMark[] = []
+  let blockMarks: BlockMark[] = []
 
-  const tree: Ast.Root = unified()
+  let tree: Ast.Root = unified()
     .use(markdown)
     .use(gfm)
     .use(frontmatter)
@@ -252,7 +252,7 @@ const parser = (data: ParsedStatus): ParsedStatus => {
   // - - endValue: [mark.lastChild.end.offset - offset, mark.end.offset]
   blockMarks.forEach((blockMark) => processBlockMark(blockMark, value))
   data.blocks = blockMarks.map((b): Block => {
-    const position = parsePosition(b.block.position)
+    let position = parsePosition(b.block.position)
     ignoredByParsers.forEach(({ index, length, originValue: raw, meta }) => {
       if (position.start <= index && position.end >= index + length) {
         if (b.hyperMarks) {
