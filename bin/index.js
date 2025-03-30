@@ -6,7 +6,7 @@ import * as glob from 'glob'
 import gitignore from 'ignore'
 import { readRc, runWithConfig, report } from '../lib/index.js'
 
-const helpMessage = `
+let helpMessage = `
 This is zhlint!
 
 Usage:
@@ -49,10 +49,10 @@ Examples:
   zhlint foo.md --output=dest.md
 `.trim()
 
-const main = () => {
-  const argv = minimist(process.argv.slice(2))
+let main = () => {
+  let argv = minimist(process.argv.slice(2))
 
-  const help = () => console.log(helpMessage)
+  let help = () => console.log(helpMessage)
 
   if (argv.v || argv.version) {
     console.log(require('../package.json').version)
@@ -71,20 +71,20 @@ const main = () => {
   }
 
   if (argv._ && argv._.length) {
-    const [filePattern] = [...argv._]
-    const configDir = argv.dir
-    const configPath = argv.config
-    const fileIgnorePath = argv.ignore || argv['file-ignore']
-    const caseIgnorePath = argv['case-ignore']
-    const config = readRc(configDir, configPath, fileIgnorePath, caseIgnorePath)
-    const fileIgnore = gitignore().add(config.fileIgnores)
-    const fileIgnoreFilter = fileIgnore.createFilter()
+    let [filePattern] = [...argv._]
+    let configDir = argv.dir
+    let configPath = argv.config
+    let fileIgnorePath = argv.ignore || argv['file-ignore']
+    let caseIgnorePath = argv['case-ignore']
+    let config = readRc(configDir, configPath, fileIgnorePath, caseIgnorePath)
+    let fileIgnore = gitignore().add(config.fileIgnores)
+    let fileIgnoreFilter = fileIgnore.createFilter()
     try {
-      const files = glob.sync(filePattern)
-      const resultList = files.filter(fileIgnoreFilter).map((file) => {
+      let files = glob.sync(filePattern)
+      let resultList = files.filter(fileIgnoreFilter).map((file) => {
         console.log(`[start] ${file}`)
-        const origin = fs.readFileSync(file, { encoding: 'utf8' })
-        const { result, validations } = runWithConfig(origin, config)
+        let origin = fs.readFileSync(file, { encoding: 'utf8' })
+        let { result, validations } = runWithConfig(origin, config)
         return {
           file,
           origin,
@@ -92,10 +92,10 @@ const main = () => {
           validations
         }
       })
-      const exitCode = report(resultList)
+      let exitCode = report(resultList)
       if (argv.o || argv.output) {
         if (files.length === 1) {
-          const { file, result } = resultList[0]
+          let { file, result } = resultList[0]
           fs.writeFileSync(argv.o || argv.output, result)
           console.log(`[output] ${file} -> ${argv.o || argv.output}`)
         } else {
