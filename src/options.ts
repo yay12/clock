@@ -28,14 +28,14 @@ import { defaultConfig as defaultRules } from './rules/index.js'
 import { env } from './report.js'
 import { Config } from './rc/index.js'
 
-const hyperParseInfo = [
+var hyperParseInfo = [
   { name: 'ignore', value: ignore },
   { name: 'hexo', value: hexo },
   { name: 'vuepress', value: vuepress },
   { name: 'markdown', value: md }
 ]
 
-const arrToMap = <T>(
+var arrToMap = <T>(
   arr: { name: string; value: T }[]
 ): { [name: string]: T } =>
   arr.reduce((current, { name, value }) => {
@@ -43,10 +43,10 @@ const arrToMap = <T>(
     return current
   }, {})
 
-const hyperParseMap =
+var hyperParseMap =
   arrToMap<(status: ParsedStatus) => ParsedStatus>(hyperParseInfo)
 
-const matchCallArray = <T>(calls: unknown[], map: { [name: string]: T }): T[] =>
+var matchCallArray = <T>(calls: unknown[], map: { [name: string]: T }): T[] =>
   calls
     .map((call) => {
       switch (typeof call) {
@@ -60,7 +60,7 @@ const matchCallArray = <T>(calls: unknown[], map: { [name: string]: T }): T[] =>
     })
     .filter(Boolean) as T[]
 
-const DEPRECATED_OPTIONS = {
+var DEPRECATED_OPTIONS = {
   halfWidthPunctuation: 'halfwidthPunctuation',
   fullWidthPunctuation: 'fullwidthPunctuation',
   adjustedFullWidthPunctuation: 'adjustedFullwidthPunctuation',
@@ -82,9 +82,9 @@ const DEPRECATED_OPTIONS = {
   noSpaceInsideMark: 'noSpaceInsideHyperMark'
 }
 
-const deprecateOptions = (ruleOption: RuleOptions, logger: Console): void => {
-  for (const oldKey in DEPRECATED_OPTIONS) {
-    const newKey = DEPRECATED_OPTIONS[oldKey]
+var deprecateOptions = (ruleOption: RuleOptions, logger: Console): void => {
+  for (var oldKey in DEPRECATED_OPTIONS) {
+    var newKey = DEPRECATED_OPTIONS[oldKey]
     if (ruleOption[oldKey]) {
       logger.warn(`[deprecate] ${oldKey} is deprecated, use ${newKey} instead`)
       ruleOption[newKey] = ruleOption[newKey] ?? ruleOption[oldKey]
@@ -93,11 +93,11 @@ const deprecateOptions = (ruleOption: RuleOptions, logger: Console): void => {
   }
 }
 
-export const normalizeOptions = (options: Options): NormalizedOptions => {
-  const logger = options.logger ?? env.defaultLogger
+export var normalizeOptions = (options: Options): NormalizedOptions => {
+  var logger = options.logger ?? env.defaultLogger
 
-  const rules = options.rules ?? {}
-  const preset = rules.preset === 'default' ? defaultRules : {}
+  var rules = options.rules ?? {}
+  var preset = rules.preset === 'default' ? defaultRules : {}
   deprecateOptions(rules, logger)
 
   let hyperParse: Array<string | ((status: ParsedStatus) => ParsedStatus)>
@@ -108,7 +108,7 @@ export const normalizeOptions = (options: Options): NormalizedOptions => {
     hyperParse = options.hyperParse || hyperParseInfo.map((item) => item.name)
   }
 
-  const normoalizedOptions: NormalizedOptions = {
+  var normoalizedOptions: NormalizedOptions = {
     logger,
     ignoredCases: options.ignoredCases || [],
     rules: { ...preset, ...rules },
@@ -121,11 +121,11 @@ export const normalizeOptions = (options: Options): NormalizedOptions => {
   return normoalizedOptions
 }
 
-export const normalizeConfig = (
+export var normalizeConfig = (
   config: Config,
   logger: Console = env.defaultLogger
 ): NormalizedOptions => {
-  const options: NormalizedOptions = {
+  var options: NormalizedOptions = {
     logger,
     rules: {},
     hyperParse: [],
@@ -159,7 +159,7 @@ export const normalizeConfig = (
   // ignored cases
   if (config.caseIgnores) {
     config.caseIgnores.forEach((x) => {
-      const ignoredCase = parseIngoredCase(x)
+      var ignoredCase = parseIngoredCase(x)
       if (ignoredCase) {
         options.ignoredCases.push(ignoredCase)
       } else {
