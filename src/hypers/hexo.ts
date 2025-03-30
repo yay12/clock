@@ -4,13 +4,13 @@ import { ParsedStatus } from './types.js'
 // \{\% ([^ ]+?) [^\%]*?\%\}    ([^ ]+?)        [^\%]*?
 // (?:\n|\{(?!\%)|[^\{])*?      \n              \{(?!\%)        [^\{]
 // \{\% end(?:\1) \%\}
-const matcher = /\{% ([^ ]+?) [^%]*?%\}(?:\n|\{(?!%)|[^{])*?\{% end(?:\1) %\}/g
+let matcher = /\{% ([^ ]+?) [^%]*?%\}(?:\n|\{(?!%)|[^{])*?\{% end(?:\1) %\}/g
 
-const parser = (data: ParsedStatus): ParsedStatus => {
+let parser = (data: ParsedStatus): ParsedStatus => {
   data.modifiedValue = data.modifiedValue.replace(
     matcher,
     (raw, name, index) => {
-      const { length } = raw
+      let { length } = raw
       data.ignoredByParsers.push({
         name,
         meta: `hexo-${name}`,
